@@ -4,6 +4,7 @@
 #' @author William Michael Landau \email{will.landau@@gmail.com}
 #' @examples
 #' # See ?txtq for examples.
+#' @useDynLib txtq, .registration = TRUE
 #' @references <https://github.com/wlandau/txtq>
 #' @importFrom base64url base64_urldecode base64_urlencode
 #' @importFrom filelock lock unlock

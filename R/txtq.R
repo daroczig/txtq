@@ -112,15 +112,17 @@ R6_txtq <- R6::R6Class(
       force(code)
     },
     txtq_get_head = function() {
-      scan(private$head_file, quiet = TRUE, what = integer())
+      read_int(private$head_file)
     },
     txtq_set_head = function(n) {
+      # Should probably drop down to C.
       write(x = as.integer(n), file = private$head_file, append = FALSE)
     },
     txtq_get_total = function() {
-      scan(private$total_file, quiet = TRUE, what = integer())
+      read_int(private$total_file)
     },
     txtq_set_total = function(n) {
+      # Should probably drop down to C.
       write(x = as.integer(n), file = private$total_file, append = FALSE)
     },
     # Faster than txtq_get_total and txtq_set_total
@@ -128,6 +130,7 @@ R6_txtq <- R6::R6Class(
     txtq_inc_total = function(n) {
       con <- file(private$total_file, "r+w")
       on.exit(close(con))
+      # Should probably drop down to C.
       old <- scan(con, quiet = TRUE, what = integer())
       out <- old + as.integer(n)
       write(x = out, file = con, append = FALSE)

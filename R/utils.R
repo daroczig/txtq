@@ -51,3 +51,11 @@ read_db_table <- function(dbfile, skip, n) {
   )
   parse_db(out)
 }
+
+read_text_file <- function(path) {
+  .Call(Cread_text_file, path)
+}
+
+read_int <- function(path) {
+  as.integer(read_text_file(path))
+}
