@@ -24,8 +24,20 @@ SEXP read_text_file(SEXP r_path) {
   return out;
 }
 
+SEXP write_text_file(SEXP r_path, SEXP r_str, SEXP r_nchar) {
+  const char *path = CHAR(STRING_ELT(r_path, 0));
+  const char *str = CHAR(STRING_ELT(r_str, 0));
+  const int nchar = asInteger(r_nchar);
+  FILE *f = fopen(path, "w");
+  fwrite(str, sizeof(char), nchar, f);
+  fwrite("\n", sizeof(char), 1, f);
+  fclose(f);
+  return R_NilValue;
+}
+
 static const R_CallMethodDef call_methods[] = {
   {"Cread_text_file", (DL_FUNC) &read_text_file, 1},
+  {"Cwrite_text_file", (DL_FUNC) &write_text_file, 3},
   {NULL, NULL, 0}
 };
 

@@ -115,25 +115,18 @@ R6_txtq <- R6::R6Class(
       read_int(private$head_file)
     },
     txtq_set_head = function(n) {
-      # Should probably drop down to C.
-      write(x = as.integer(n), file = private$head_file, append = FALSE)
+      write_int(private$head_file, as.integer(n))
     },
     txtq_get_total = function() {
       read_int(private$total_file)
     },
     txtq_set_total = function(n) {
-      # Should probably drop down to C.
-      write(x = as.integer(n), file = private$total_file, append = FALSE)
+      write_int(private$total_file, as.integer(n))
     },
-    # Faster than txtq_get_total and txtq_set_total
-    # because it uses fewer connections:
     txtq_inc_total = function(n) {
-      con <- file(private$total_file, "r+w")
-      on.exit(close(con))
-      # Should probably drop down to C.
-      old <- scan(con, quiet = TRUE, what = integer())
+      old <- read_int(private$total_file)
       out <- old + as.integer(n)
-      write(x = out, file = con, append = FALSE)
+      write_int(private$total_file, out)
     },
     txtq_count = function() {
       as.integer(
@@ -170,7 +163,13 @@ R6_txtq <- R6::R6Class(
       private$txtq_push(title = keep$title, message = keep$message)
     },
     txtq_log = function() {
-      if (length(scan(private$db_file, quiet = TRUE, what = character())) < 1){
+      file_head <- scan(
+        private$db_file,
+        quiet = TRUE,
+        nmax = 1L,
+        what = character()
+      )
+      if (length(file_head) < 1L) {
         return(null_log)
       }
       read_db_table(
@@ -223,7 +222,8 @@ R6_txtq <- R6::R6Class(
     },
     push = function(title, message) {
       private$txtq_exclusive(
-        private$txtq_push(title = title, message = message))
+        private$txtq_push(title = title, message = message)
+      )
     },
     reset = function() {
       private$txtq_exclusive(private$txtq_reset())

@@ -56,6 +56,14 @@ read_text_file <- function(path) {
   .Call(Cread_text_file, path)
 }
 
+write_text_file <- function(path, text) {
+  .Call(Cwrite_text_file, path, text, nchar(text))
+}
+
 read_int <- function(path) {
   as.integer(read_text_file(path))
+}
+
+write_int <- function(path, n) {
+  write_text_file(path, as.character(n))
 }
